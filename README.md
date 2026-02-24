@@ -1,59 +1,63 @@
-# MadokHymoClickDummyAngular
+# WAWIG – Click-Dummy
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
+Interaktiver Prototyp des **WAWIG-Verwaltungssystems** (WIBAS Madok Hymo) für die Verwaltung von Trinkwasserschutz-Einzugsgebieten in Baden-Württemberg.
 
-## Development server
+> **Hinweis:** Dies ist ein Click-Dummy ohne Backend-Anbindung. Alle angezeigten Daten sind Beispieldaten und werden nicht gespeichert.
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
-```
+## Voraussetzungen
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- **Node.js** ab Version 22 – [Download](https://nodejs.org/)
+- **npm** (wird mit Node.js mitgeliefert)
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Prüfe deine Installation:
 
 ```bash
-ng generate component component-name
+node --version    # z.B. v22.x.x
+npm --version     # z.B. 11.x.x
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Installation
+
+1. Repository klonen:
 
 ```bash
-ng generate --help
+git clone https://git.chrissy.synology.me/Chris/Wawig-ClickDummy.git
+cd Wawig-ClickDummy
 ```
 
-## Building
-
-To build the project run:
+2. Abhängigkeiten installieren:
 
 ```bash
-ng build
+npm install
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Starten
 
 ```bash
-ng test
+npm start
 ```
 
-## Running end-to-end tests
+Anschließend im Browser öffnen: **http://localhost:4200/**
 
-For end-to-end (e2e) testing, run:
+Die Anwendung aktualisiert sich automatisch bei Änderungen am Quellcode.
 
-```bash
-ng e2e
-```
+## Funktionsumfang
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+| Bereich | Beschreibung |
+|---------|-------------|
+| **Stammdaten** | Einzugsgebiets-ID, WSG-Nummern, Betreiber, WRRL-Kennungen |
+| **Beschreibung** | Hydrogeologie, Landnutzung nach Sektoren |
+| **Risikomanagement** | Filterbare Maßnahmentabelle mit Details pro Eintrag |
+| **Suche** | Suchmaske mit Ergebnistabelle und Export (CSV/XLSX) |
+| **GIS-Tool** | Karteneditor mit Polygon-Digitalisierung und Flächenberechnung |
+| **Dokumente** | TrinkwEGV-Berichte und technische Unterlagen verwalten |
+| **Import/Export** | GWDB-Import, Stammdaten-/RMM-Export, Geometrie-Upload |
 
-## Additional Resources
+## Bedienung
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Über die **linke Seitenleiste** zwischen den Funktionsbereichen wechseln
+- Die Seitenleiste lässt sich über das Menü-Icon einklappen
+- Alle Formulare und Tabellen sind mit Beispieldaten befüllt
+- Änderungen werden **nicht** gespeichert (Prototyp)
