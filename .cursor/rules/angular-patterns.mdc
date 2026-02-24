@@ -1,0 +1,81 @@
+---
+description: Angular Coding-Konventionen für dieses Projekt
+globs: **/*.ts
+alwaysApply: false
+---
+
+# Angular Coding-Konventionen
+
+## Komponenten
+
+Alle Komponenten sind **Standalone Components** – kein NgModule.
+
+```typescript
+// ✅ RICHTIG
+@Component({
+  selector: 'app-my-feature',
+  standalone: true,
+  imports: [FloatingLabelInputComponent, CustomCheckboxComponent],
+  template: `...`
+})
+export class MyFeatureComponent { }
+
+// ❌ FALSCH – kein separates Template-File, kein NgModule
+```
+
+## State Management: Signals
+
+Formularzustand immer mit `signal<T>()` verwalten, kein `BehaviorSubject`, kein klassisches Property-Binding für Formulare.
+
+```typescript
+// ✅ RICHTIG
+formData = signal<MyData>({ name: '', status: 'active' });
+
+handleChange(field: keyof MyData, value: any) {
+  this.formData.update(prev => ({ ...prev, [field]: value }));
+}
+
+makeHandler(field: keyof MyData): (value: string) => void {
+  return (value: string) => this.handleChange(field, value);
+}
+```
+
+## Typen
+
+Datentypen und Tab-IDs gehören in `src/app/types.ts`:
+
+```typescript
+// types.ts
+export interface MyEntityData {
+  name: string;
+  status: 'active' | 'inactive';
+}
+
+export type TabId = 'general' | 'details' | 'docs';
+
+export type SidebarItem = {
+  id: TabId;
+  label: string;
+};
+```
+
+## Icons
+
+Nur Icons aus `lucide-angular` verwenden:
+
+```typescript
+import { LucideAngularModule, ChevronRight, Trash2 } from 'lucide-angular';
+
+// In der Klasse:
+readonly ChevronRightIcon = ChevronRight;
+
+// Im Template:
+// <lucide-icon [img]="ChevronRightIcon" [size]="16"></lucide-icon>
+```
+
+## Allgemein
+
+- Kein `ngModel`, kein `ReactiveFormsModule` – State via Signals
+- Kein `any` als Typ, außer bei Event-Handlern mit `handleChange`
+- Template immer inline (kein `templateUrl`)
+- Styles immer via Tailwind (kein `styleUrls`)

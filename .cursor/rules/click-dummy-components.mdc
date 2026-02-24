@@ -1,0 +1,118 @@
+---
+description: Shared-Komponenten und Tab-Erstellung im Click-Dummy
+globs: src/app/**/*.ts
+alwaysApply: false
+---
+
+# Click-Dummy: Komponenten & Tabs
+
+## Verfügbare Shared-Komponenten
+
+Alle Formularelemente aus `src/app/shared/` verwenden – **niemals** native HTML-Inputs direkt stylen.
+
+| Komponente | Selector | Verwendung |
+|---|---|---|
+| `FloatingLabelInputComponent` | `app-floating-label-input` | Text-, Zahlen-, E-Mail-Felder |
+| `FloatingLabelSelectComponent` | `app-floating-label-select` | Dropdown-Auswahl |
+| `FloatingLabelTextareaComponent` | `app-floating-label-textarea` | Mehrzeilige Texteingabe |
+| `DateInputComponent` | `app-date-input` | Datumsfelder |
+| `CustomCheckboxComponent` | `app-custom-checkbox` | Einzelne Checkboxen |
+| `CustomRadioComponent` | `app-custom-radio` | Radio-Buttons |
+
+## Shared-Komponenten Verwendung
+
+```html
+<!-- Text-Input -->
+<app-floating-label-input label="Bezeichnung*" name="name" [value]="formData().name" />
+
+<!-- Select mit ng-content für Options -->
+<app-floating-label-select label="Status*" [value]="formData().status" [changeHandler]="makeHandler('status')">
+  <option value="active">Aktiv</option>
+  <option value="inactive">Inaktiv</option>
+</app-floating-label-select>
+
+<!-- Checkbox -->
+<app-custom-checkbox label="Bereits abgeschlossen" [checked]="formData().done" (checkedChange)="handleChange('done', $event)" />
+
+<!-- Radio -->
+<app-custom-radio label="Typ A" name="entityType" [checked]="formData().type === 'a'" (checkedChange)="handleChange('type', 'a')" />
+
+<!-- Datum -->
+<app-date-input label="Datum" [value]="formData().date" [disabled]="!formData().done" (valueChange)="handleChange('date', $event)" />
+```
+
+## Neuen Tab anlegen (Schritt-für-Schritt)
+
+### 1. Typ in `types.ts` erweitern
+```typescript
+export type TabId = 'general' | 'description' | 'mynewtab';
+```
+
+### 2. Komponente anlegen: `src/app/components/my-new-tab/my-new-tab.component.ts`
+```typescript
+@Component({
+  selector: 'app-my-new-tab',
+  standalone: true,
+  imports: [FloatingLabelInputComponent],
+  template: `
+    <div class="space-y-6 max-w-6xl mx-auto">
+      <section class="bg-white p-6 rounded shadow-sm border border-gray-200">
+        <h2 class="text-xl font-medium text-gray-800 mb-6">Abschnittstitel</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <app-floating-label-input label="Feld 1" name="field1" [value]="formData().field1" />
+        </div>
+      </section>
+    </div>
+  `
+})
+export class MyNewTabComponent {
+  formData = signal<MyNewTabData>({ field1: '' });
+  handleChange(field: keyof MyNewTabData, value: any) {
+    this.formData.update(prev => ({ ...prev, [field]: value }));
+  }
+}
+```
+
+### 3. In `sidebar.component.ts` registrieren
+```typescript
+menuItems: SidebarItem[] = [
+  // ... bestehende Items
+  { id: 'mynewtab', label: 'Mein neuer Tab' },
+];
+```
+
+### 4. In `app.ts` einbinden
+```typescript
+// imports-Array ergänzen:
+imports: [..., MyNewTabComponent]
+
+// Im @switch-Block ergänzen:
+@case ('mynewtab') { <app-my-new-tab /> }
+
+// In getPageTitle() ergänzen:
+case 'mynewtab': return 'Mein neuer Tab';
+```
+
+## Layout-Grundstruktur einer Tab-Seite
+
+```html
+<div class="space-y-6 max-w-6xl mx-auto">
+
+  <!-- Sektion -->
+  <section class="bg-white p-6 rounded shadow-sm border border-gray-200">
+    <h2 class="text-xl font-medium text-gray-800 mb-6">Sektionsüberschrift</h2>
+
+    <!-- 3-spaltig -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      ...
+    </div>
+
+    <!-- 12-Spalten-Grid für komplexe Layouts -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+      <div class="md:col-span-8">...</div>
+      <div class="md:col-span-4">...</div>
+    </div>
+  </section>
+
+</div>
+```
