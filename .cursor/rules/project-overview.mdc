@@ -1,0 +1,49 @@
+---
+description: Projekt-Überblick, Tech-Stack und Design-Sprache des WAWIG Click-Dummys
+alwaysApply: true
+---
+
+# WAWIG Click-Dummy Projekt-Überblick
+
+Dieses Projekt ist ein **Angular 21 Click-Dummy** für die Fachanwendung **WAWIG** (Verwaltung von Wasserschutzgebieten und Einzugsgebieten) im WIBAS-Kontext. Es dient der Erfassung und Verwaltung von Daten gemäß der Trinkwassereinzugsgebieteverordnung (TrinkwEGV).
+
+## Fachlicher Kontext
+
+- **Einzugsgebiete (EG):** Gebiete um Trinkwasserentnahmestellen, identifiziert durch `ID_EG` (Format: `DE_TWEG_BW_XXXX`)
+- **Wasserschutzgebiete (WSG):** Über WSG-Nr.-AMT verknüpft
+- **Risikomanagementmaßnahmen (RMM):** Maßnahmen je Sektor und WSG zur Risikominderung
+- **Nutzer:** Landratsämter (UWB), Regierungspräsidien, LUBW
+
+## Tech-Stack
+
+- **Angular 21** – Standalone Components, Signals (`signal()`, `computed()`)
+- **Tailwind CSS v4** – Utility-first, kein separates Config-File nötig
+- **Lucide Angular** – Icon-Bibliothek (`lucide-angular`)
+- **TypeScript ~5.9**
+
+## Design-Sprache
+
+- **Primärfarbe:** `#004e82` (dunkelblau) – für Header, aktive Zustände, Links
+- **Hintergrund App:** `bg-[#f0f2f5]`
+- **Sektionskarten:** `bg-white p-6 rounded shadow-sm border border-gray-200`
+- **Formularfelder:** Shared-Komponenten aus `src/app/shared/` verwenden (niemals native Inputs direkt stylen)
+- **Seitenleiste:** Breite `w-64`, aktiver Tab mit `border-l-4 border-[#004e82] bg-sky-50 text-[#004e82]`
+- **Breadcrumb:** Navigationspfad oben links, letztes Element fett in `#004e82`
+
+## Anwendungsstruktur
+
+- Navigation über **Tabs** (Sidebar-Links) – jeder Tab ist eine eigene Komponente in `src/app/components/`
+- Daten-Typen in `src/app/types.ts` definieren
+- Tabs in `app.ts` via `@switch (activeTab())` einbinden und in `sidebar.component.ts` als `menuItems` registrieren
+
+## Tabs
+
+| Tab-ID | Label | Komponente |
+|---|---|---|
+| `stammdaten` | Stammdaten (EG) | `StammdatenComponent` |
+| `beschreibung` | Weitere Stammdaten | `BeschreibungComponent` |
+| `rmm` | Risikomanagementmaßnahmen | `RmmComponent` |
+| `suche` | Suche / Filtern | `SucheComponent` |
+| `import-export` | Import / Export | `ImportExportComponent` |
+| `gis` | Geometrie / GIS | `GisToolComponent` |
+| `dokumente` | Dokumente | `DokumenteComponent` |
