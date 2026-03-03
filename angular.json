@@ -88,6 +88,13 @@
             }
           },
           "defaultConfiguration": "development"
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "baseHref": "/wawig-dummy/",
+            "repo": "https://github.com/groenska/wawig-dummy.git"
+          }
         }
       }
     }
