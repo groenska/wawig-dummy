@@ -20,6 +20,23 @@ import { SucheResult } from '../../types';
       <!-- Suchformular -->
       <section class="bg-white p-6 rounded shadow-sm border border-gray-200">
         <h2 class="text-xl font-medium text-gray-800 mb-6">Suche / Filtern</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div class="md:col-span-2">
+            <app-floating-label-input
+              label="Allgemeine Suche"
+              name="allgemeinesSuche"
+              placeholder="EG-Nr., Name, Betreiber, Dienststelle …" />
+          </div>
+          <app-floating-label-select
+            label="Bearbeitungsstand"
+            value=""
+            [changeHandler]="noopHandler">
+            <option value="">Alle Bearbeitungsstände</option>
+            <option value="Entwurf">Entwurf</option>
+            <option value="Plausibilisiert">Plausibilisiert</option>
+            <option value="Abgeschlossen">Abgeschlossen</option>
+          </app-floating-label-select>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <app-floating-label-select
             label="Datenführende Dienststelle"

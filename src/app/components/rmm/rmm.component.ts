@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { LucideAngularModule, Plus, ChevronDown, ChevronUp, Pencil } from 'lucide-angular';
+import { LucideAngularModule, Plus, ChevronDown, ChevronUp, Pencil, Upload } from 'lucide-angular';
 import { FloatingLabelSelectComponent } from '../../shared/floating-label-select.component';
 import { FloatingLabelInputComponent } from '../../shared/floating-label-input.component';
 import { FloatingLabelTextareaComponent } from '../../shared/floating-label-textarea.component';
@@ -50,7 +50,14 @@ import { RmmEntry } from '../../types';
             <option value="2025-2027">2025–2027</option>
           </app-floating-label-select>
 
-          <div class="md:col-span-2 flex items-end justify-end">
+          <div class="md:col-span-2 flex items-end justify-end gap-2">
+            <input #xlsxInput type="file" accept=".xlsx,.xls" class="hidden" (change)="onXlsxUpload($event)"/>
+            <button
+              (click)="xlsxInput.click()"
+              class="flex items-center gap-2 border border-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-50 transition-colors">
+              <lucide-icon [img]="UploadIcon" [size]="16"></lucide-icon>
+              <span>XLSX importieren</span>
+            </button>
             <button
               (click)="addEntry()"
               class="flex items-center gap-2 bg-[#004e82] text-white px-4 py-2 rounded text-sm hover:bg-[#003d66] transition-colors">
@@ -191,6 +198,7 @@ export class RmmComponent {
   readonly ChevronDownIcon = ChevronDown;
   readonly ChevronUpIcon = ChevronUp;
   readonly PencilIcon = Pencil;
+  readonly UploadIcon = Upload;
 
   filterSektor = signal('');
   filterZyklus = signal('2025-2027');
@@ -266,6 +274,10 @@ export class RmmComponent {
     };
     this.entries.update(list => [newEntry, ...list]);
     this.expandedId.set(newEntry.id);
+  }
+
+  onXlsxUpload(_event: Event) {
+    // Platzhalter – Import-Logik folgt
   }
 
   getTypLabel(val: string): string {

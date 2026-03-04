@@ -38,8 +38,9 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
           [isOpen]="isSidebarOpen()"
           [activeTab]="activeTab()"
           [selectedEg]="selectedEg()"
-          (selectTab)="activeTab.set($event)"
-          (closeEg)="selectedEg.set(null); activeTab.set('suche')">
+          [isNewEg]="isNewEg()"
+          (selectTab)="handleSelectTab($event)"
+          (closeEg)="handleCloseEg()">
         </app-sidebar>
 
         <main class="flex-1 flex flex-col min-w-0">
@@ -53,19 +54,33 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
                 </button>
                 <lucide-icon [img]="ChevronRightIcon" [size]="12" class="text-gray-400"></lucide-icon>
                 <span class="text-[#004e82] font-bold cursor-default">Benutzerverwaltung</span>
-              } @else if (activeTab() === 'suche' || activeTab() === 'neues-einzugsgebiet') {
+              } @else if (activeTab() === 'suche') {
                 <span class="text-gray-400 cursor-default">Hauptmenü</span>
                 <lucide-icon [img]="ChevronRightIcon" [size]="12" class="text-gray-400"></lucide-icon>
-                <span class="text-[#004e82] font-bold cursor-default">{{ getPageTitle(activeTab()) }}</span>
-              } @else {
+                <span class="text-[#004e82] font-bold cursor-default">Suche / Filtern</span>
+              } @else if (isNewEg()) {
                 <button
-                  (click)="activeTab.set('suche')"
+                  (click)="handleCloseEg()"
                   class="hover:text-[#004e82] hover:underline focus:outline-none focus:text-[#004e82] transition-colors">
                   Hauptmenü
                 </button>
                 <lucide-icon [img]="ChevronRightIcon" [size]="12" class="text-gray-400"></lucide-icon>
                 <button
-                  (click)="activeTab.set('suche')"
+                  (click)="activeTab.set('stammdaten')"
+                  class="hover:text-[#004e82] hover:underline focus:outline-none focus:text-[#004e82] transition-colors">
+                  Neues Einzugsgebiet
+                </button>
+                <lucide-icon [img]="ChevronRightIcon" [size]="12" class="text-gray-400"></lucide-icon>
+                <span class="text-[#004e82] font-bold cursor-default">{{ getPageTitle(activeTab()) }}</span>
+              } @else {
+                <button
+                  (click)="handleCloseEg()"
+                  class="hover:text-[#004e82] hover:underline focus:outline-none focus:text-[#004e82] transition-colors">
+                  Hauptmenü
+                </button>
+                <lucide-icon [img]="ChevronRightIcon" [size]="12" class="text-gray-400"></lucide-icon>
+                <button
+                  (click)="activeTab.set('stammdaten')"
                   class="hover:text-[#004e82] hover:underline focus:outline-none focus:text-[#004e82] transition-colors">
                   @if (selectedEg()) { Einzugsgebiet ({{ selectedEg()!.idEg }}) } @else { Einzugsgebiet }
                 </button>
@@ -99,14 +114,32 @@ export class AppComponent {
   isSidebarOpen = signal(true);
   activeTab = signal<TabId>('suche');
   selectedEg = signal<SucheResult | null>(null);
+  isNewEg = signal(false);
 
   toggleSidebar() {
     this.isSidebarOpen.update(v => !v);
   }
 
+  handleSelectTab(tab: TabId) {
+    if (tab === 'neues-einzugsgebiet') {
+      this.selectedEg.set(null);
+      this.isNewEg.set(true);
+      this.activeTab.set('stammdaten');
+    } else {
+      this.activeTab.set(tab);
+    }
+  }
+
   selectEg(eg: SucheResult) {
+    this.isNewEg.set(false);
     this.selectedEg.set(eg);
     this.activeTab.set('stammdaten');
+  }
+
+  handleCloseEg() {
+    this.selectedEg.set(null);
+    this.isNewEg.set(false);
+    this.activeTab.set('suche');
   }
 
   getPageTitle(id: TabId): string {

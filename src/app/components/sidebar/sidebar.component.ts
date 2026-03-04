@@ -17,7 +17,7 @@ import { SidebarItem, TabId, SucheResult } from '../../types';
       [class.opacity-0]="!isOpen"
       [class.overflow-hidden]="!isOpen">
 
-      @if (selectedEg) {
+      @if (selectedEg || isNewEg) {
         <!-- EG-Modus -->
         <button
           (click)="closeEg.emit()"
@@ -26,20 +26,31 @@ import { SidebarItem, TabId, SucheResult } from '../../types';
           Zurück zur Suche
         </button>
 
-        <div class="px-4 py-4 border-b border-gray-200 whitespace-nowrap">
-          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Einzugsgebiet</p>
-          <p class="font-mono text-sm font-bold text-[#004e82] truncate">{{ selectedEg.idEg }}</p>
-          <p class="text-xs text-gray-600 truncate mt-0.5">{{ selectedEg.name }}</p>
-          <span class="inline-block mt-2 text-xs px-2 py-0.5 rounded-full border"
-            [class.bg-yellow-50]="selectedEg.bearbeitungsstand === 'Entwurf'"
-            [class.border-yellow-200]="selectedEg.bearbeitungsstand === 'Entwurf'"
-            [class.text-yellow-800]="selectedEg.bearbeitungsstand === 'Entwurf'"
-            [class.bg-green-50]="selectedEg.bearbeitungsstand === 'Plausibilisiert'"
-            [class.border-green-200]="selectedEg.bearbeitungsstand === 'Plausibilisiert'"
-            [class.text-green-800]="selectedEg.bearbeitungsstand === 'Plausibilisiert'">
-            {{ selectedEg.bearbeitungsstand }}
-          </span>
-        </div>
+        @if (isNewEg) {
+          <div class="px-4 py-4 border-b border-gray-200 whitespace-nowrap">
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Neues Einzugsgebiet</p>
+            <p class="text-sm font-medium text-gray-700 truncate">Name: (vorläufig)</p>
+            <p class="text-xs text-gray-500 truncate mt-0.5">Entnahmestelle: –</p>
+            <span class="inline-block mt-2 text-xs px-2 py-0.5 rounded-full border bg-sky-50 border-sky-200 text-sky-800">
+              Neu / ungespeichert
+            </span>
+          </div>
+        } @else {
+          <div class="px-4 py-4 border-b border-gray-200 whitespace-nowrap">
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Einzugsgebiet</p>
+            <p class="font-mono text-sm font-bold text-[#004e82] truncate">{{ selectedEg!.idEg }}</p>
+            <p class="text-xs text-gray-600 truncate mt-0.5">{{ selectedEg!.name }}</p>
+            <span class="inline-block mt-2 text-xs px-2 py-0.5 rounded-full border"
+              [class.bg-yellow-50]="selectedEg!.bearbeitungsstand === 'Entwurf'"
+              [class.border-yellow-200]="selectedEg!.bearbeitungsstand === 'Entwurf'"
+              [class.text-yellow-800]="selectedEg!.bearbeitungsstand === 'Entwurf'"
+              [class.bg-green-50]="selectedEg!.bearbeitungsstand === 'Plausibilisiert'"
+              [class.border-green-200]="selectedEg!.bearbeitungsstand === 'Plausibilisiert'"
+              [class.text-green-800]="selectedEg!.bearbeitungsstand === 'Plausibilisiert'">
+              {{ selectedEg!.bearbeitungsstand }}
+            </span>
+          </div>
+        }
 
         <nav class="flex-1 w-64">
           <ul>
@@ -101,6 +112,7 @@ export class SidebarComponent {
   @Input() isOpen = true;
   @Input() activeTab: TabId = 'suche';
   @Input() selectedEg: SucheResult | null = null;
+  @Input() isNewEg = false;
   @Output() selectTab = new EventEmitter<TabId>();
   @Output() closeEg = new EventEmitter<void>();
 
