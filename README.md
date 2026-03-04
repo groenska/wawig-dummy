@@ -1,6 +1,6 @@
 # WAWIG – Click-Dummy
 
-Interaktiver Prototyp des **WAWIG-Verwaltungssystems** (WIBAS Madok Hymo) für die Verwaltung von Trinkwasserschutz-Einzugsgebieten in Baden-Württemberg.
+Interaktiver Prototyp des **WAWIG-Verwaltungssystems** für die Verwaltung von Trinkwasser-Einzugsgebieten in Baden-Württemberg.
 
 > **Hinweis:** Dies ist ein Click-Dummy ohne Backend-Anbindung. Alle angezeigten Daten sind Beispieldaten und werden nicht gespeichert.
 
