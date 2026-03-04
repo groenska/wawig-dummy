@@ -7,6 +7,7 @@ Diese Datei wird von Claude Code automatisch geladen und enthält alle wichtigen
 ## Projektübersicht
 
 **Name**: WAWIG – WIBAS (Madok Hymo Click Dummy Angular)
+**Version**: v1.2.0
 **Zweck**: Verwaltungssystem für Trinkwasserschutz-Einzugsgebiete in Baden-Württemberg.
 Sachbearbeiter können Einzugsgebietsdaten pflegen, Risikomanagement-Maßnahmen verwalten, Geometrien digitalisieren und Dokumente verwalten.
 
@@ -14,6 +15,7 @@ Sachbearbeiter können Einzugsgebietsdaten pflegen, Risikomanagement-Maßnahmen 
 
 **Sprache**: Deutsch (UI und Domänenlogik vollständig auf Deutsch)
 **Primäre Nutzerrolle**: Sachbearbeiter Trinkwasserschutz (z.B. Landratsamt Esslingen)
+**Deployment**: GitHub Pages → https://groenska.github.io/wawig-dummy/
 
 ---
 
@@ -34,6 +36,7 @@ Sachbearbeiter können Einzugsgebietsdaten pflegen, Risikomanagement-Maßnahmen 
 ## Architektur
 
 - **Navigation**: Tab-basiert via `activeTab = signal<TabId>(...)` in `src/app/app.ts` – **kein Angular Router**
+- **EG-Modus**: `selectedEg` und `isNewEg` Signals in `app.ts` steuern, ob Sidebar Hauptmenü oder EG-Untermenü zeigt
 - **Template-Syntax**: Neue Syntax `@if`, `@switch`, `@case`, `@for` (Angular 17+)
 - **Standalone Components**: Alle Komponenten nutzen `standalone: true`
 - **Keine Services**: Daten leben direkt in den Komponenten als Signals
@@ -48,16 +51,15 @@ Sachbearbeiter können Einzugsgebietsdaten pflegen, Risikomanagement-Maßnahmen 
 
 | Komponente | Tab-ID | Beschreibung |
 |-----------|--------|--------------|
-| `header` | – | Topbar mit Logo (WAWIG v1.0.0), Menü-Toggle, User-Icon |
-| `sidebar` | – | Kollabierbare linke Navigation, 7 Menüpunkte |
+| `header` | – | Topbar mit Logo (WAWIG v1.2.0), Menü-Toggle, User-Icon |
+| `sidebar` | – | Kollabierbare linke Navigation; Hauptmenü oder EG-Untermenü je nach Kontext |
 | `stammdaten` | `stammdaten` | Stammdaten-Formular: ID_EG, WSG-Nummern, Betreiber, WRRL-IDs |
-| `beschreibung` | `beschreibung` | Hydrogeologie, Landnutzung nach Sektoren (Summe muss 100% ergeben) |
-| `rmm` | `rmm` | Risikomanagement-Maßnahmen: filterable Tabelle, erweiterbare Zeilen |
-| `suche` | `suche` | Suchmaske + Ergebnistabelle mit Export (CSV/XLSX) |
-| `import-export` | `import-export` | Import aus GWDB, Export Stammdaten/RMM, Geometrie-Upload |
+| `beschreibung` | `beschreibung` | Hydrogeologie; Landnutzung via ALKIS-Abruf als Balkendiagramm (10 Sektoren) |
+| `rmm` | `rmm` | Risikomanagement-Maßnahmen: filterbare Tabelle, erweiterbare Zeilen, XLSX-Import |
+| `suche` | `suche` | Suchmaske (allg. Suche + Bearbeitungsstand-Filter) + Ergebnistabelle mit Export |
 | `gis-tool` | `gis` | SVG-basierter Karteneditor, Polygon-Digitalisierung, Fläche in ha |
 | `dokumente` | `dokumente` | TrinkwEGV-Berichte und techn. Unterlagen: Up-/Download |
-| `user-profile` | `user-profile` | Benutzerinfos (Max Mustermann, wawig-user-1) |
+| `user-profile` | `user-profile` | Benutzerinfos (wawig-user-1) |
 
 ### Shared Components (`src/app/shared/`)
 
@@ -75,6 +77,7 @@ Sachbearbeiter können Einzugsgebietsdaten pflegen, Risikomanagement-Maßnahmen 
 - `EinzugsgebietData` – Stammdaten-Interface
 - `BeschreibungData` – Hydrogeologie-Interface
 - `RmmEntry` – Risikomanagement-Eintrag
+- `SucheResult` – Suchergebnis-Interface (idEg, name, dienststelle, gewaesser, betreiber, bearbeitungsstand)
 - `TabId` – Union-Type aller Tab-IDs
 - `SidebarItem` – Sidebar-Menüeintrag
 
