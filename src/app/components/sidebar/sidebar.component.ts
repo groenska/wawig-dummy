@@ -1,9 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { LucideAngularModule, ChevronLeft } from 'lucide-angular';
 import { SidebarItem, TabId, SucheResult } from '../../types';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
+  imports: [LucideAngularModule],
   template: `
     <aside
       class="bg-white border-r border-gray-200 flex flex-col h-full overflow-y-auto shrink-0 transition-all duration-300 ease-in-out"
@@ -15,48 +17,43 @@ import { SidebarItem, TabId, SucheResult } from '../../types';
       [class.opacity-0]="!isOpen"
       [class.overflow-hidden]="!isOpen">
 
-      <!-- Navigation -->
-      <div class="p-4 pb-2 whitespace-nowrap">
-        <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Hauptmenü</h2>
-      </div>
-      <nav class="w-64">
-        <ul>
-          <!-- Suche / Filtern -->
-          <li>
-            <button
-              (click)="selectTab.emit('suche')"
-              class="w-full text-left block px-4 py-3 text-sm transition-colors border-l-4 outline-none"
-              [class.border-[#004e82]]="activeTab === 'suche'"
-              [class.bg-sky-50]="activeTab === 'suche'"
-              [class.text-[#004e82]]="activeTab === 'suche'"
-              [class.font-semibold]="activeTab === 'suche'"
-              [class.border-transparent]="activeTab !== 'suche'"
-              [class.text-gray-700]="activeTab !== 'suche'"
-              [class.hover:bg-gray-50]="activeTab !== 'suche'"
-              [class.hover:text-gray-900]="activeTab !== 'suche'"
-              [class.focus:bg-gray-50]="activeTab !== 'suche'">
-              Suche / Filtern
-            </button>
-          </li>
+      @if (selectedEg) {
+        <!-- EG-Modus -->
+        <button
+          (click)="closeEg.emit()"
+          class="flex items-center gap-1.5 w-full px-4 py-3 text-xs text-gray-500 hover:text-[#004e82] hover:bg-gray-50 transition-colors border-b border-gray-200 whitespace-nowrap outline-none">
+          <lucide-icon [img]="ChevronLeftIcon" [size]="13"></lucide-icon>
+          Zurück zur Suche
+        </button>
 
-          <!-- Einzugsgebiet-Untermenü (dynamisch nach Suche) -->
-          @if (selectedEg) {
-            <li>
-              <p class="pl-7 pr-4 py-1.5 text-xs text-[#004e82] font-semibold truncate border-l-4 border-transparent bg-sky-50">
-                {{ selectedEg.idEg }}
-              </p>
-            </li>
+        <div class="px-4 py-4 border-b border-gray-200 whitespace-nowrap">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Einzugsgebiet</p>
+          <p class="font-mono text-sm font-bold text-[#004e82] truncate">{{ selectedEg.idEg }}</p>
+          <p class="text-xs text-gray-600 truncate mt-0.5">{{ selectedEg.name }}</p>
+          <span class="inline-block mt-2 text-xs px-2 py-0.5 rounded-full border"
+            [class.bg-yellow-50]="selectedEg.bearbeitungsstand === 'Entwurf'"
+            [class.border-yellow-200]="selectedEg.bearbeitungsstand === 'Entwurf'"
+            [class.text-yellow-800]="selectedEg.bearbeitungsstand === 'Entwurf'"
+            [class.bg-green-50]="selectedEg.bearbeitungsstand === 'Plausibilisiert'"
+            [class.border-green-200]="selectedEg.bearbeitungsstand === 'Plausibilisiert'"
+            [class.text-green-800]="selectedEg.bearbeitungsstand === 'Plausibilisiert'">
+            {{ selectedEg.bearbeitungsstand }}
+          </span>
+        </div>
+
+        <nav class="flex-1 w-64">
+          <ul>
             @for (item of egItems; track item.id) {
               <li>
                 <button
                   (click)="selectTab.emit(item.id)"
-                  class="w-full text-left block pl-7 pr-4 py-2 text-sm transition-colors border-l-4 outline-none"
+                  class="w-full text-left block px-4 py-3 text-sm transition-colors border-l-4 outline-none"
                   [class.border-[#004e82]]="activeTab === item.id"
                   [class.bg-sky-50]="activeTab === item.id"
                   [class.text-[#004e82]]="activeTab === item.id"
                   [class.font-semibold]="activeTab === item.id"
                   [class.border-transparent]="activeTab !== item.id"
-                  [class.text-gray-600]="activeTab !== item.id"
+                  [class.text-gray-700]="activeTab !== item.id"
                   [class.hover:bg-gray-50]="activeTab !== item.id"
                   [class.hover:text-gray-900]="activeTab !== item.id"
                   [class.focus:bg-gray-50]="activeTab !== item.id">
@@ -64,35 +61,48 @@ import { SidebarItem, TabId, SucheResult } from '../../types';
                 </button>
               </li>
             }
-          }
+          </ul>
+        </nav>
 
-          <!-- Neues Einzugsgebiet -->
-          <li>
-            <button
-              (click)="selectTab.emit('neues-einzugsgebiet')"
-              class="w-full text-left block px-4 py-3 text-sm transition-colors border-l-4 outline-none"
-              [class.border-[#004e82]]="activeTab === 'neues-einzugsgebiet'"
-              [class.bg-sky-50]="activeTab === 'neues-einzugsgebiet'"
-              [class.text-[#004e82]]="activeTab === 'neues-einzugsgebiet'"
-              [class.font-semibold]="activeTab === 'neues-einzugsgebiet'"
-              [class.border-transparent]="activeTab !== 'neues-einzugsgebiet'"
-              [class.text-gray-700]="activeTab !== 'neues-einzugsgebiet'"
-              [class.hover:bg-gray-50]="activeTab !== 'neues-einzugsgebiet'"
-              [class.hover:text-gray-900]="activeTab !== 'neues-einzugsgebiet'"
-              [class.focus:bg-gray-50]="activeTab !== 'neues-einzugsgebiet'">
-              Neues Einzugsgebiet
-            </button>
-          </li>
-        </ul>
-      </nav>
+      } @else {
+        <!-- Hauptmenü -->
+        <div class="p-4 pb-2 whitespace-nowrap">
+          <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Hauptmenü</h2>
+        </div>
+        <nav class="w-64">
+          <ul>
+            @for (item of mainItems; track item.id) {
+              <li>
+                <button
+                  (click)="selectTab.emit(item.id)"
+                  class="w-full text-left block px-4 py-3 text-sm transition-colors border-l-4 outline-none"
+                  [class.border-[#004e82]]="activeTab === item.id"
+                  [class.bg-sky-50]="activeTab === item.id"
+                  [class.text-[#004e82]]="activeTab === item.id"
+                  [class.font-semibold]="activeTab === item.id"
+                  [class.border-transparent]="activeTab !== item.id"
+                  [class.text-gray-700]="activeTab !== item.id"
+                  [class.hover:bg-gray-50]="activeTab !== item.id"
+                  [class.hover:text-gray-900]="activeTab !== item.id"
+                  [class.focus:bg-gray-50]="activeTab !== item.id">
+                  {{ item.label }}
+                </button>
+              </li>
+            }
+          </ul>
+        </nav>
+      }
     </aside>
   `
 })
 export class SidebarComponent {
+  readonly ChevronLeftIcon = ChevronLeft;
+
   @Input() isOpen = true;
   @Input() activeTab: TabId = 'suche';
   @Input() selectedEg: SucheResult | null = null;
   @Output() selectTab = new EventEmitter<TabId>();
+  @Output() closeEg = new EventEmitter<void>();
 
   mainItems: SidebarItem[] = [
     { id: 'suche', label: 'Suche / Filtern' },

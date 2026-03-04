@@ -38,7 +38,8 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
           [isOpen]="isSidebarOpen()"
           [activeTab]="activeTab()"
           [selectedEg]="selectedEg()"
-          (selectTab)="activeTab.set($event)">
+          (selectTab)="activeTab.set($event)"
+          (closeEg)="selectedEg.set(null); activeTab.set('suche')">
         </app-sidebar>
 
         <main class="flex-1 flex flex-col min-w-0">
