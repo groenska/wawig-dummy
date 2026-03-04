@@ -52,7 +52,18 @@ export interface RmmEntry {
   kommentar: string;
 }
 
-export type TabId = 'stammdaten' | 'beschreibung' | 'rmm' | 'suche' | 'import-export' | 'gis' | 'dokumente' | 'user-profile';
+export interface SucheResult {
+  idEg: string;
+  name: string;
+  dienststelle: string;
+  gewaesser: string;
+  betreiber: string;
+  bearbeitungsstand: string;
+}
+
+export type EgDetailTabId = 'stammdaten' | 'gis' | 'beschreibung' | 'rmm' | 'dokumente';
+
+export type TabId = 'suche' | 'neues-einzugsgebiet' | EgDetailTabId | 'user-profile';
 
 export type SidebarItem = {
   id: TabId;

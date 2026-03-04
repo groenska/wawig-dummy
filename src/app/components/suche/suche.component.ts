@@ -1,17 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, Output, EventEmitter } from '@angular/core';
 import { LucideAngularModule, Search, Download, RotateCcw } from 'lucide-angular';
 import { FloatingLabelInputComponent } from '../../shared/floating-label-input.component';
 import { FloatingLabelSelectComponent } from '../../shared/floating-label-select.component';
 import { CustomCheckboxComponent } from '../../shared/custom-checkbox.component';
-
-interface SucheResult {
-  idEg: string;
-  name: string;
-  dienststelle: string;
-  gewaesser: string;
-  betreiber: string;
-  bearbeitungsstand: string;
-}
+import { SucheResult } from '../../types';
 
 @Component({
   selector: 'app-suche',
@@ -132,7 +124,7 @@ interface SucheResult {
             </thead>
             <tbody class="divide-y divide-gray-100">
               @for (r of results; track r.idEg) {
-                <tr class="hover:bg-gray-50 transition-colors cursor-pointer">
+                <tr class="hover:bg-blue-50 transition-colors cursor-pointer" (click)="egSelected.emit(r)">
                   <td class="px-4 py-3 font-mono text-[#004e82] font-medium">{{ r.idEg }}</td>
                   <td class="px-4 py-3 text-gray-900">{{ r.name }}</td>
                   <td class="px-4 py-3 text-gray-600">{{ r.dienststelle }}</td>
@@ -159,6 +151,8 @@ interface SucheResult {
   `
 })
 export class SucheComponent {
+  @Output() egSelected = new EventEmitter<SucheResult>();
+
   readonly SearchIcon = Search;
   readonly DownloadIcon = Download;
   readonly ResetIcon = RotateCcw;

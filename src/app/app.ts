@@ -1,13 +1,12 @@
 import { Component, signal } from '@angular/core';
 import { LucideAngularModule, ChevronRight } from 'lucide-angular';
-import { TabId } from './types';
+import { TabId, SucheResult } from './types';
 import { HeaderComponent } from './components/header/header.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { StammdatenComponent } from './components/stammdaten/stammdaten.component';
 import { BeschreibungComponent } from './components/beschreibung/beschreibung.component';
 import { RmmComponent } from './components/rmm/rmm.component';
 import { SucheComponent } from './components/suche/suche.component';
-import { ImportExportComponent } from './components/import-export/import-export.component';
 import { GisToolComponent } from './components/gis-tool/gis-tool.component';
 import { DokumenteComponent } from './components/dokumente/dokumente.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
@@ -23,7 +22,6 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
     BeschreibungComponent,
     RmmComponent,
     SucheComponent,
-    ImportExportComponent,
     GisToolComponent,
     DokumenteComponent,
     UserProfileComponent,
@@ -39,6 +37,7 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
         <app-sidebar
           [isOpen]="isSidebarOpen()"
           [activeTab]="activeTab()"
+          [selectedEg]="selectedEg()"
           (selectTab)="activeTab.set($event)">
         </app-sidebar>
 
@@ -47,23 +46,27 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
             <div class="flex items-center text-xs text-gray-500 gap-1 font-medium">
               @if (activeTab() === 'user-profile') {
                 <button
-                  (click)="activeTab.set('stammdaten')"
+                  (click)="activeTab.set('suche')"
                   class="hover:text-[#004e82] hover:underline focus:outline-none focus:text-[#004e82] transition-colors">
                   System
                 </button>
                 <lucide-icon [img]="ChevronRightIcon" [size]="12" class="text-gray-400"></lucide-icon>
                 <span class="text-[#004e82] font-bold cursor-default">Benutzerverwaltung</span>
+              } @else if (activeTab() === 'suche' || activeTab() === 'neues-einzugsgebiet') {
+                <span class="text-gray-400 cursor-default">Hauptmenü</span>
+                <lucide-icon [img]="ChevronRightIcon" [size]="12" class="text-gray-400"></lucide-icon>
+                <span class="text-[#004e82] font-bold cursor-default">{{ getPageTitle(activeTab()) }}</span>
               } @else {
                 <button
-                  (click)="activeTab.set('stammdaten')"
+                  (click)="activeTab.set('suche')"
                   class="hover:text-[#004e82] hover:underline focus:outline-none focus:text-[#004e82] transition-colors">
                   Hauptmenü
                 </button>
                 <lucide-icon [img]="ChevronRightIcon" [size]="12" class="text-gray-400"></lucide-icon>
                 <button
-                  (click)="activeTab.set('stammdaten')"
+                  (click)="activeTab.set('suche')"
                   class="hover:text-[#004e82] hover:underline focus:outline-none focus:text-[#004e82] transition-colors">
-                  Einzugsgebiet (DE_TWEG_BW_1234)
+                  @if (selectedEg()) { Einzugsgebiet ({{ selectedEg()!.idEg }}) } @else { Einzugsgebiet }
                 </button>
                 <lucide-icon [img]="ChevronRightIcon" [size]="12" class="text-gray-400"></lucide-icon>
                 <span class="text-[#004e82] font-bold cursor-default">{{ getPageTitle(activeTab()) }}</span>
@@ -76,8 +79,8 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
               @case ('stammdaten') { <app-stammdaten /> }
               @case ('beschreibung') { <app-beschreibung /> }
               @case ('rmm') { <app-rmm /> }
-              @case ('suche') { <app-suche /> }
-              @case ('import-export') { <app-import-export /> }
+              @case ('suche') { <app-suche (egSelected)="selectEg($event)" /> }
+              @case ('neues-einzugsgebiet') { <app-stammdaten /> }
               @case ('gis') { <app-gis-tool /> }
               @case ('dokumente') { <app-dokumente /> }
               @case ('user-profile') { <app-user-profile /> }
@@ -93,19 +96,25 @@ export class AppComponent {
   readonly ChevronRightIcon = ChevronRight;
 
   isSidebarOpen = signal(true);
-  activeTab = signal<TabId>('stammdaten');
+  activeTab = signal<TabId>('suche');
+  selectedEg = signal<SucheResult | null>(null);
 
   toggleSidebar() {
     this.isSidebarOpen.update(v => !v);
   }
 
+  selectEg(eg: SucheResult) {
+    this.selectedEg.set(eg);
+    this.activeTab.set('stammdaten');
+  }
+
   getPageTitle(id: TabId): string {
     switch (id) {
+      case 'suche': return 'Suche / Filtern';
+      case 'neues-einzugsgebiet': return 'Neues Einzugsgebiet';
       case 'stammdaten': return 'Stammdaten (EG)';
       case 'beschreibung': return 'Beschreibung / Hydrogeologie';
       case 'rmm': return 'Risikomanagement (RMM)';
-      case 'suche': return 'Suche / Filtern';
-      case 'import-export': return 'Import / Export';
       case 'gis': return 'Geometrie / GIS';
       case 'dokumente': return 'Dokumente';
       case 'user-profile': return 'Benutzerprofil';
