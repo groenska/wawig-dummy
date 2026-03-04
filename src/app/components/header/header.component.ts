@@ -17,7 +17,7 @@ import { LucideAngularModule, Menu, User } from 'lucide-angular';
         <div class="flex flex-col leading-tight cursor-default">
           <div class="flex items-baseline gap-2">
             <span class="font-bold text-lg tracking-wide">WAWIG</span>
-            <span class="text-xs opacity-80 mt-1">v1.0.0</span>
+            <span class="text-xs opacity-80 mt-1">v1.2.0</span>
           </div>
           <span class="text-xs font-light text-sky-100 uppercase tracking-widest">WIBAS</span>
         </div>
